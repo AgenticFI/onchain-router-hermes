@@ -7,6 +7,7 @@ import json
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 from pathlib import Path
@@ -30,9 +31,16 @@ def _node_version(node: str) -> tuple[int, int, int]:
 
 def _package_metadata(root: Path, scope: str, name: str) -> dict:
     path = root / "node_modules" / scope / name / "package.json"
-    if path.is_symlink() or not path.is_file() or path.stat().st_size > 16 * 1024:
+    metadata = path.lstat()
+    if path.is_symlink() or not stat.S_ISREG(metadata.st_mode) or metadata.st_size > 16 * 1024:
         raise RuntimeError("installed AgenticFI package metadata is invalid")
+    if hasattr(os, "getuid") and metadata.st_uid != os.getuid():
+        raise RuntimeError("installed AgenticFI package metadata has the wrong owner")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _child_environment() -> dict[str, str]:
+    return {name: os.environ[name] for name in ("HOME", "LANG", "LC_ALL", "PATH", "TMPDIR", "USER") if name in os.environ}
 
 
 def install_local_clients() -> Path:
@@ -61,7 +69,7 @@ def install_local_clients() -> Path:
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=False,
-        env={name: os.environ[name] for name in ("HOME", "PATH", "TMPDIR", "USER") if name in os.environ},
+        env=_child_environment(),
     )
     if result.returncode != 0:
         raise RuntimeError("exact AgenticFI client installation failed")
@@ -83,6 +91,7 @@ def _enable_plugin() -> bool:
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=False,
+        env=_child_environment(),
     )
     return result.returncode == 0
 
@@ -119,7 +128,7 @@ def _doctor(_: argparse.Namespace) -> None:
 
 
 def _status(args: argparse.Namespace) -> None:
-    current = ensure_running() if args.start else status()
+    current = ensure_running(recover_crash=True) if args.start else status()
     print(json.dumps(current.__dict__, indent=2))
     if not current.reachable:
         raise SystemExit(1)
@@ -128,6 +137,39 @@ def _status(args: argparse.Namespace) -> None:
 def _stop(_: argparse.Namespace) -> None:
     stop()
     print("Stopped the managed local proxy, if this adapter owned one.")
+
+
+def _update(_: argparse.Namespace) -> None:
+    root = install_local_clients()
+    print(f"Verified and updated exact AgenticFI clients at {root}.")
+    print("No wallet, policy, bearer, receipt, or recovery data was changed.")
+
+
+def _uninstall_clients(args: argparse.Namespace) -> None:
+    if not args.confirm:
+        raise SystemExit("refusing to remove clients without --confirm")
+    root = npm_root()
+    proxy_meta = _package_metadata(root, "@agenticfi", "onchain-router-proxy")
+    cli_meta = _package_metadata(root, "@agenticfi", "onchain-router-cli")
+    if proxy_meta.get("version") != PROXY_VERSION or cli_meta.get("version") != CLI_VERSION:
+        raise RuntimeError("refusing to remove an unrecognized AgenticFI client version")
+    npm = shutil.which("npm")
+    if not npm:
+        raise RuntimeError("npm is required")
+    stop()
+    result = subprocess.run(
+        [npm, "uninstall", "--ignore-scripts", "--no-audit", "--no-fund", PROXY_PACKAGE, CLI_PACKAGE],
+        cwd=root,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+        env=_child_environment(),
+    )
+    if result.returncode != 0:
+        raise RuntimeError("exact AgenticFI client removal failed")
+    print("Removed only the Hermes-managed AgenticFI npm clients.")
+    print(f"Kept Buyer Runtime profile, wallet, policy, bearer, and receipts at {root.parent.parent}.")
 
 
 def register_cli(parser: argparse.ArgumentParser) -> None:
@@ -141,13 +183,18 @@ def register_cli(parser: argparse.ArgumentParser) -> None:
     status_parser.set_defaults(func=_status)
     stop_parser = subcommands.add_parser("stop", help="Stop only the proxy owned by this adapter")
     stop_parser.set_defaults(func=_stop)
+    update_parser = subcommands.add_parser("update", help="Reinstall and verify the approved exact clients")
+    update_parser.set_defaults(func=_update)
+    uninstall_parser = subcommands.add_parser("uninstall-clients", help="Remove only Hermes-managed npm clients")
+    uninstall_parser.add_argument("--confirm", action="store_true", help="Confirm removal of exact managed clients")
+    uninstall_parser.set_defaults(func=_uninstall_clients)
     parser.add_argument("--version", action="version", version=__version__)
 
 
 def handle_cli(args: argparse.Namespace) -> None:
     action = getattr(args, "func", None)
     if action is None:
-        print("Usage: hermes onchain-router <setup|doctor|status|stop>")
+        print("Usage: hermes onchain-router <setup|doctor|status|stop|update|uninstall-clients>")
         return
     action(args)
 

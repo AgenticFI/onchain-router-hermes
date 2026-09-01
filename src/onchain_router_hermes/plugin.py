@@ -48,7 +48,7 @@ def register_host_plugin(ctx: Any) -> None:
         name="onchain-router",
         handler=commands.dispatch,
         description="AgenticFI Onchain Router status and usage help",
-        args_hint="<status|help>",
+        args_hint="<status|doctor|models|pricing|voices|recovery|help>",
     )
     ctx.register_cli_command(
         name="onchain-router",

@@ -6,7 +6,8 @@ payment authority remain outside Hermes and under human-owned local policy.
 
 ## Release status
 
-Version `0.1.0` is a private alpha source candidate. It is not published or production-qualified.
+Version `0.1.0` is a bounded public-alpha source candidate. It is not yet published or
+production-qualified.
 Building the wheel, installing it in a clean environment, discovering the provider, and running
 fake-loopback tests do not unlock a wallet, make a paid request, deploy a service, or spend USDC.
 
@@ -21,8 +22,10 @@ fake-loopback tests do not unlock a wallet, make a paid request, deploy a servic
 | `onchain_router_image_generate` | One image with size/aspect/model controls | Paid |
 | `onchain_router_speech_generate` | Hosted MP3 speech | Paid |
 | `onchain_router_transcribe` | Bounded MP3 Base64 transcription | Paid |
-| `/onchain-router status` | Redacted local readiness | Free |
-| `hermes onchain-router ...` | Human setup, doctor, status, and managed-proxy stop | Free |
+| `/onchain-router status|doctor` | Redacted local readiness and diagnostics | Free |
+| `/onchain-router models|pricing|voices` | In-session discovery without an LLM call | Free |
+| `/onchain-router recovery` | Safe same-key recovery guidance | Free |
+| `hermes onchain-router ...` | Human setup, update, doctor, status, stop, and client removal | Free |
 
 Every native chat retry for one logical model call carries the same deterministic Buyer Runtime
 idempotency key. The key is derived only from Hermes request identity—not prompt or completion
@@ -49,9 +52,11 @@ uv pip install --python .venv/bin/python -e '.[dev]'
 .venv/bin/python -m build
 ```
 
-The official-host qualification installs the built wheel, enables its entry point in an isolated
-Hermes home, and checks both model-provider and ordinary plugin discovery against Hermes `0.21.0`.
-It uses no wallet or public endpoint.
+The distribution qualification installs the built wheel in an isolated environment, imports it,
+reinstalls the same version as an update, imports it again, uninstalls it, and proves the package is
+gone. The official-host qualification separately enables the entry point in an isolated Hermes
+home and checks both model-provider and ordinary plugin discovery against Hermes `0.21.0`. Neither
+qualification uses a wallet or public endpoint.
 
 ## Installation and setup
 
@@ -75,6 +80,20 @@ start the proxy or create, import, unlock, fund, or charge a wallet. Complete Bu
 and unlock separately in a human terminal using the installed AgenticFI CLI, then restart Hermes.
 The proxy creates the non-wallet owner-only bearer when it starts. Select provider
 `onchain-router` plus a model from the live picker.
+
+Lifecycle commands are explicit and preserve financial state:
+
+```bash
+hermes-onchain-router update
+hermes-onchain-router doctor
+hermes-onchain-router status --start
+hermes-onchain-router stop
+hermes-onchain-router uninstall-clients --confirm
+```
+
+`update` reinstalls only the two pinned client versions. `uninstall-clients` removes only those
+Hermes-managed npm clients; it keeps the Buyer Runtime profile, wallet, policy, bearer, and receipts.
+The Python plugin remains installed until the human removes it with their Python package manager.
 
 ```bash
 ~/.onchain-router/hermes/npm/node_modules/.bin/onchain-router setup
@@ -166,6 +185,8 @@ does not delete provider copies.
 - Exact client missing: rerun `hermes-onchain-router setup`; it never installs `latest`.
 - Port occupied: stop the unrelated process or start the expected proxy. The plugin never scans an
   alternate port.
+- Managed proxy exited: paid calls remain blocked until a human inspects receipts and runs
+  `hermes-onchain-router status --start`; the plugin does not heartbeat-restart the process.
 - Ambiguous result: do not use a new key or model. Inspect receipts and recover with the original
   key and identical body.
 
