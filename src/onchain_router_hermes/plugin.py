@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from . import cli, commands, proxy, schemas, tools
+from .middleware import attach_paid_request_identity
 from .token import refresh_token_environment
 
 
@@ -36,6 +37,7 @@ def register_host_plugin(ctx: Any) -> None:
     # This is the sole permitted startup secret read: a non-wallet owner-only bearer.
     refresh_token_environment()
     ctx.register_hook("pre_llm_call", _ensure_before_llm)
+    ctx.register_middleware("llm_request", attach_paid_request_identity)
     _register_tool(ctx, "onchain_router_models", schemas.EMPTY_SCHEMA, tools.models, "List live policy-filtered AgenticFI models without spending.", "🧭")
     _register_tool(ctx, "onchain_router_pricing", schemas.EMPTY_SCHEMA, tools.pricing, "Inspect current model pricing without spending.", "🧾")
     _register_tool(ctx, "onchain_router_voices", schemas.EMPTY_SCHEMA, tools.voices, "List public speech voices and compatibility without spending.", "🔊")

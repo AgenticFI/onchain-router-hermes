@@ -24,6 +24,10 @@ fake-loopback tests do not unlock a wallet, make a paid request, deploy a servic
 | `/onchain-router status` | Redacted local readiness | Free |
 | `hermes onchain-router ...` | Human setup, doctor, status, and managed-proxy stop | Free |
 
+Every native chat retry for one logical model call carries the same deterministic Buyer Runtime
+idempotency key. The key is derived only from Hermes request identity—not prompt or completion
+content—so host retry behavior cannot create a second financial operation.
+
 The plugin does not add video or search endpoints that AgenticFI does not offer. It does not create,
 import, read, unlock, fund, or back up a wallet; implement x402; connect directly to production;
 download a package during host startup or a model call; retry a paid request; or choose a fallback.
@@ -136,6 +140,7 @@ does not delete provider copies.
 
 ## Payment, recovery, and receipts
 
+- Native Hermes chat retries reuse one deterministic idempotency key for the same logical API call.
 - Every media call requires one caller-generated stable idempotency key.
 - Reuse it only with the identical request and only for deliberate recovery.
 - Never automatically retry a timeout, disconnect, ambiguous `409`, provider-unknown, settlement-

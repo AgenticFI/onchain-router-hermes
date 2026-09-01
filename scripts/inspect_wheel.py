@@ -23,7 +23,10 @@ def main(path: str) -> None:
             raise SystemExit("wheel identity drifted")
         if metadata["License-Expression"] != "MIT":
             raise SystemExit("wheel license drifted")
-        description = metadata.get_payload()
+        encoded_description = metadata.get_payload(decode=True)
+        if not isinstance(encoded_description, bytes):
+            raise SystemExit("wheel long description encoding is invalid")
+        description = encoded_description.decode(metadata.get_content_charset() or "utf-8")
         source_readme = Path("README.md").read_text(encoding="utf-8")
         if description.strip() != source_readme.strip():
             raise SystemExit("wheel long description differs from README")

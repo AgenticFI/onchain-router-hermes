@@ -63,6 +63,27 @@ def main(mode: str) -> None:
             raise SystemExit("general plugin commands are missing")
         if "onchain-router:guide" not in manager._plugin_skills:
             raise SystemExit("general plugin skill is missing")
+        if "llm_request" not in manager._middleware or len(manager._middleware["llm_request"]) != 1:
+            raise SystemExit("stable paid-request middleware is missing")
+        identity_context = {
+            "request": {"model": "model-a", "messages": [{"role": "user", "content": "private"}]},
+            "session_id": "session-1",
+            "turn_id": "turn-1",
+            "api_request_id": "turn-1:api:1",
+            "api_call_count": 1,
+            "model": "model-a",
+            "provider": "onchain-router",
+            "base_url": "http://127.0.0.1:8402/v1",
+        }
+        identities = manager.invoke_middleware("llm_request", **identity_context)
+        repeated = manager.invoke_middleware("llm_request", **identity_context)
+        if len(identities) != 1 or identities != repeated:
+            raise SystemExit("Hermes retry identity is not stable")
+        headers = identities[0].get("request", {}).get("extra_headers", {})
+        if not str(headers.get("Idempotency-Key", "")).startswith("hermes-"):
+            raise SystemExit("Hermes paid-request identity is missing")
+        if headers.get("Cache-Control") != "no-store":
+            raise SystemExit("Hermes paid-request cache bypass is missing")
     print(f"hermes_official_discovery_{mode}_ok")
 
 

@@ -11,12 +11,16 @@ class FakeContext:
         self.cli = []
         self.skills = []
         self.unloads = []
+        self.middleware = []
 
     def register_tool(self, **kwargs):
         self.tools.append(kwargs)
 
     def register_hook(self, name, handler):
         self.hooks.append((name, handler))
+
+    def register_middleware(self, name, handler):
+        self.middleware.append((name, handler))
 
     def register_command(self, **kwargs):
         self.commands.append(kwargs)
@@ -45,6 +49,7 @@ def test_general_entrypoint_registers_expected_bounded_surfaces(monkeypatch):
         "onchain_router_transcribe",
     }
     assert [name for name, _ in context.hooks] == ["pre_llm_call"]
+    assert [name for name, _ in context.middleware] == ["llm_request"]
     assert [command["name"] for command in context.commands] == ["onchain-router"]
     assert [command["name"] for command in context.cli] == ["onchain-router"]
     assert [skill["name"] for skill in context.skills] == ["guide"]
