@@ -23,6 +23,7 @@ jobs:
       - run: .venv/bin/pytest
       - run: .venv/bin/python -m build
       - run: .venv/bin/python scripts/inspect_wheel.py dist/*.whl
+      - run: .venv/bin/python scripts/qualify_install_lifecycle.py dist/*.whl
       - run: git init "$RUNNER_TEMP/hermes-agent"
       - run: git -C "$RUNNER_TEMP/hermes-agent" remote add origin https://github.com/NousResearch/hermes-agent.git
       - run: git -C "$RUNNER_TEMP/hermes-agent" fetch --depth 1 origin 18a76be124d7c16ed98b629a358b23fef76a7f46

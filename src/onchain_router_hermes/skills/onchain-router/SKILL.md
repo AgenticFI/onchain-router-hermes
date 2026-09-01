@@ -24,5 +24,8 @@ encrypted staging deletion.
 Do not ask for, read, display, or store a wallet key, mnemonic, proxy bearer, payment signature,
 raw payment payload, provider key, or receipt capability. Do not change setup, unlock, funding,
 policy, backup, recovery, or package versions. Those are human terminal actions. Use
-`/onchain-router status` for redacted readiness and ask the human to run
-`hermes onchain-router doctor` when it fails.
+`/onchain-router status` or `/onchain-router doctor` for redacted readiness. Use the free
+`/onchain-router models`, `pricing`, and `voices` subcommands for discovery, and
+`/onchain-router recovery` for safe same-key guidance. Ask the human to run
+`hermes onchain-router doctor` when readiness fails; an unexpected proxy exit requires an explicit
+human `hermes onchain-router status --start` after receipt review.

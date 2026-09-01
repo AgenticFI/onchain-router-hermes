@@ -27,6 +27,7 @@ PROBE_INTERVAL_SECONDS = 0.1
 
 _lock = threading.RLock()
 _process: subprocess.Popen | None = None
+_crashed = False
 
 
 @dataclass(frozen=True)
@@ -146,18 +147,26 @@ def ensure_running(
     which: Callable[[str], str | None] = shutil.which,
     monotonic: Callable[[], float] = time.monotonic,
     sleep: Callable[[float], None] = time.sleep,
+    recover_crash: bool = False,
 ) -> ProxyStatus:
     """Reuse or start one fixed-port proxy. Never downloads or retries a paid call."""
-    global _process
+    global _crashed, _process
     probe_fn = probe or (lambda: probe_proxy())
     resolver = resolve_entrypoint or resolve_proxy_entrypoint
     with _lock:
         if probe_fn():
+            if recover_crash:
+                _crashed = False
             refresh_token_environment()
             managed = _process is not None and _process.poll() is None
             return ProxyStatus(True, managed=managed, pid=_process.pid if managed else None)
         if _process is not None and _process.poll() is not None:
             _process = None
+            _crashed = True
+        if _crashed and not recover_crash:
+            return ProxyStatus(False, error="managed buyer proxy exited; inspect receipts, then restart explicitly")
+        if recover_crash:
+            _crashed = False
         if not autospawn:
             return ProxyStatus(False, error="buyer proxy is not running; start it in a human terminal")
         node = which("node")
@@ -190,6 +199,7 @@ def ensure_running(
         while monotonic() < deadline:
             if process.poll() is not None:
                 _process = None
+                _crashed = True
                 return ProxyStatus(False, error="buyer proxy exited before becoming ready")
             if probe_fn():
                 refresh_token_environment()
@@ -215,4 +225,6 @@ def stop() -> None:
 
 def reset_for_tests() -> None:
     """Test-only state cleanup; never removes files."""
+    global _crashed
     stop()
+    _crashed = False

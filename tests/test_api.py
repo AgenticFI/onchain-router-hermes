@@ -1,6 +1,7 @@
 import json
 
 import httpx
+import pytest
 
 from onchain_router_hermes import api
 from onchain_router_hermes.proxy import ProxyStatus
@@ -57,3 +58,57 @@ def test_ambiguous_transport_is_never_retried(monkeypatch):
         "message": "local proxy outcome is unknown; inspect receipts and recover with the same key",
         "retry": "human_review",
     }
+
+
+def test_free_call_is_bounded_authenticated_and_allowlisted(monkeypatch):
+    token = "a" * 43
+
+    def handler(request: httpx.Request):
+        assert request.headers["authorization"] == f"Bearer {token}"
+        return httpx.Response(200, json={"data": []})
+
+    monkeypatch.setattr(api, "ensure_running", lambda: ProxyStatus(True))
+    monkeypatch.setattr(api, "read_proxy_token", lambda: token)
+    assert api.get_free("/v1/models", transport=httpx.MockTransport(handler)) == {
+        "ok": True, "result": {"data": []}
+    }
+    with pytest.raises(ValueError, match="unsupported"):
+        api.get_free("/health/live", transport=httpx.MockTransport(handler))
+
+
+def test_paid_error_sanitizes_body_and_unknown_headers(monkeypatch):
+    secret = "never-return-this"
+
+    def handler(_request: httpx.Request):
+        return httpx.Response(
+            402,
+            json={"error": {"code": "declined", "message": secret}},
+            headers={"x-onchain-router-retry": "never", "x-internal-debug": secret},
+        )
+
+    monkeypatch.setattr(api, "ensure_running", lambda: ProxyStatus(True))
+    monkeypatch.setattr(api, "read_proxy_token", lambda: "a" * 43)
+    result = api.post_paid("/v1/audio/speech", {}, "speech-key", transport=httpx.MockTransport(handler))
+    assert result["error"] == {"code": "declined", "message": "buyer proxy returned HTTP 402"}
+    assert result["retry"] == "never"
+    assert secret not in json.dumps(result)
+
+
+def test_paid_path_and_key_are_validated_before_transport(monkeypatch):
+    monkeypatch.setattr(api, "ensure_running", lambda: (_ for _ in ()).throw(AssertionError("no probe")))
+    with pytest.raises(ValueError, match="unsupported"):
+        api.post_paid("/v1/chat/completions", {}, "key")
+    with pytest.raises(ValueError, match="idempotency"):
+        api.post_paid("/v1/audio/speech", {}, "bad key")
+
+
+def test_declared_oversize_and_invalid_json_fail_as_unknown_transport(monkeypatch):
+    monkeypatch.setattr(api, "ensure_running", lambda: ProxyStatus(True))
+    monkeypatch.setattr(api, "read_proxy_token", lambda: "a" * 43)
+
+    def oversized(_request: httpx.Request):
+        return httpx.Response(200, content=b"{}", headers={"content-length": str(api.MAX_FREE_RESPONSE_BYTES + 1)})
+
+    assert api.get_free("/v1/models", transport=httpx.MockTransport(oversized))["outcome"] == "transport_unknown"
+    invalid = httpx.MockTransport(lambda _request: httpx.Response(200, content=b"not-json"))
+    assert api.get_free("/v1/models", transport=invalid)["outcome"] == "transport_unknown"

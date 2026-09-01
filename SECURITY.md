@@ -10,13 +10,18 @@
 - Host startup never downloads code. Human `setup` installs exact npm versions with lifecycle
   scripts disabled; runtime resolves and validates their package metadata and executable path.
 - The supervisor starts one fixed-port child, never scans ports or runs a heartbeat, and stops only
-  its own child. It never replays a paid request.
+  its own child. An unexpected exit is latched and paid calls remain blocked until an explicit
+  human `status --start`; it never replays a paid request.
 - Paid tools require an explicit idempotency key, validate inputs before proxy handoff, make one
   outbound call, bound responses, and classify transport uncertainty for human review.
+- In-session status, discovery, diagnostics, and recovery commands are read-only and redact the
+  bearer. Install/update/removal commands pass a minimal environment, require exact package
+  identities, and never remove the Buyer Runtime profile or financial records.
 
 ## Supported systems
 
-The private alpha targets macOS and Linux with Python 3.11–3.13, Hermes Agent 0.21.0, and Node.js
+The bounded public-alpha candidate targets macOS and Linux with Python 3.11–3.13, Hermes Agent
+0.21.0, and Node.js
 20.18 or newer. Windows is not advertised until equivalent process, filesystem, and secret tests
 pass.
 
