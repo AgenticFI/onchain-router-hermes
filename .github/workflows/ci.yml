@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@e92bafb6253dcd438e0484186d7669ea7a8ca1cc # v6
+        with:
+          version: "0.8.17"
+          python-version: "3.13"
+      - run: uv venv --python 3.13
+      - run: uv pip install --python .venv/bin/python -e '.[dev]'
+      - run: .venv/bin/pytest
+      - run: .venv/bin/python -m build
+      - run: .venv/bin/python scripts/inspect_wheel.py dist/*.whl
+      - run: git init "$RUNNER_TEMP/hermes-agent"
+      - run: git -C "$RUNNER_TEMP/hermes-agent" remote add origin https://github.com/NousResearch/hermes-agent.git
+      - run: git -C "$RUNNER_TEMP/hermes-agent" fetch --depth 1 origin 18a76be124d7c16ed98b629a358b23fef76a7f46
+      - run: git -C "$RUNNER_TEMP/hermes-agent" checkout --detach FETCH_HEAD
+      - run: test "$(git -C "$RUNNER_TEMP/hermes-agent" rev-parse HEAD)" = "18a76be124d7c16ed98b629a358b23fef76a7f46"
+      - run: uv pip install --python .venv/bin/python --no-deps --editable "$RUNNER_TEMP/hermes-agent"
+      - run: uv pip install --python .venv/bin/python --no-deps --reinstall dist/*.whl
+      - run: HERMES_HOME="$RUNNER_TEMP/hermes-disabled" .venv/bin/python scripts/qualify_official_hermes.py disabled
+      - run: HERMES_HOME="$RUNNER_TEMP/hermes-enabled" .venv/bin/python scripts/qualify_official_hermes.py enabled
+      - run: HERMES_HOME="$RUNNER_TEMP/hermes-general" .venv/bin/python scripts/qualify_official_hermes.py general

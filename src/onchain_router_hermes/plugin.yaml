@@ -1,0 +1,14 @@
+name: onchain-router
+version: 0.1.0
+description: "AgenticFI Onchain Router provider and bounded media tools over the local Buyer Runtime."
+author: AgenticFI
+kind: standalone
+provides_tools:
+  - onchain_router_models
+  - onchain_router_pricing
+  - onchain_router_voices
+  - onchain_router_image_generate
+  - onchain_router_speech_generate
+  - onchain_router_transcribe
+provides_hooks:
+  - pre_llm_call
