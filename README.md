@@ -71,8 +71,8 @@ hermes-onchain-router setup
 scripts disabled:
 
 ```text
-@agenticfi/onchain-router-proxy@0.1.0
-@agenticfi/onchain-router-cli@0.1.0
+@agenticfi/onchain-router-proxy@0.1.2
+@agenticfi/onchain-router-cli@0.1.2
 ```
 
 It enables the Hermes plugin when the `hermes` executable is available. It deliberately does not

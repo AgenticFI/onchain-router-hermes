@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Updated the managed AgenticFI CLI and buyer proxy dependencies to the corrected public npm alpha `0.1.2`.
+
 ## 0.1.0 - public-alpha candidate
 
 - Added native Hermes provider discovery and stable per-call idempotency middleware.
