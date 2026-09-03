@@ -3,6 +3,10 @@
 ## Unreleased
 
 - Updated the managed AgenticFI CLI and buyer proxy dependencies to the corrected public npm alpha `0.1.2`.
+- Added the root manifest and entry point required by Hermes' native Git installer.
+- Added a public `owner/repo` install path, desktop deep link, post-install guidance, and direct Git
+  install qualification against the official Hermes host.
+- Updated the release build backend to patched `setuptools` `83.0.0`.
 
 ## 0.1.0 - public-alpha candidate
 

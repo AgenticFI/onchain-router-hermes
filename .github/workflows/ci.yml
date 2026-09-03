@@ -34,3 +34,4 @@ jobs:
       - run: HERMES_HOME="$RUNNER_TEMP/hermes-disabled" .venv/bin/python scripts/qualify_official_hermes.py disabled
       - run: HERMES_HOME="$RUNNER_TEMP/hermes-enabled" .venv/bin/python scripts/qualify_official_hermes.py enabled
       - run: HERMES_HOME="$RUNNER_TEMP/hermes-general" .venv/bin/python scripts/qualify_official_hermes.py general
+      - run: .venv/bin/python scripts/qualify_git_install.py

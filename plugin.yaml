@@ -1,6 +1,5 @@
 name: onchain-router
 version: 0.1.0
-manifest_version: 2
 api_version: 1
 description: "AgenticFI Onchain Router provider and bounded media tools over the local Buyer Runtime."
 author: AgenticFI
