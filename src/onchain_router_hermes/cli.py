@@ -18,7 +18,7 @@ from .proxy import PROXY_PACKAGE, PROXY_VERSION, ensure_running, npm_root, resol
 from .token import read_proxy_token, token_file
 
 CLI_PACKAGE = "@agenticfi/onchain-router-cli"
-CLI_VERSION = "0.1.0"
+CLI_VERSION = "0.1.2"
 
 
 def _node_version(node: str) -> tuple[int, int, int]:
