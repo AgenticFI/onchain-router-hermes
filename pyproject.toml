@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools==80.9.0", "wheel==0.46.3"]
+requires = ["setuptools==83.0.0", "wheel==0.46.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -32,6 +32,7 @@ dev = [
   "build==1.3.0",
   "pyyaml==6.0.3",
   "pytest==9.0.3",
+  "rich==14.3.3",
 ]
 
 [project.entry-points."hermes_agent.plugins"]
@@ -45,6 +46,7 @@ Homepage = "https://llm.agenticfi.wtf/docs/hermes"
 Documentation = "https://llm.agenticfi.wtf/docs/hermes"
 Repository = "https://github.com/AgenticFI/onchain-router-hermes"
 Issues = "https://github.com/AgenticFI/onchain-router-hermes/issues"
+Changelog = "https://github.com/AgenticFI/onchain-router-hermes/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]

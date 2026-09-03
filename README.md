@@ -6,10 +6,11 @@ payment authority remain outside Hermes and under human-owned local policy.
 
 ## Release status
 
-Version `0.1.0` is a bounded public-alpha source candidate. It is not yet published or
-production-qualified.
-Building the wheel, installing it in a clean environment, discovering the provider, and running
-fake-loopback tests do not unlock a wallet, make a paid request, deploy a service, or spend USDC.
+Version `0.1.0` is a bounded public alpha. It is installable through Hermes' native GitHub plugin
+installer and is also available as a versioned GitHub release. Building or installing it,
+discovering the provider, and running fake-loopback tests do not unlock a wallet, make a paid
+request, deploy a service, or spend USDC. Funded Hermes acceptance remains an explicit operator
+test because it spends from the operator's Buyer Runtime wallet.
 
 ## Surfaces
 
@@ -60,12 +61,27 @@ qualification uses a wallet or public endpoint.
 
 ## Installation and setup
 
-After the package is published, installation is two explicit human actions:
+Review the [security model](./SECURITY.md), then install and verify the public plugin using Hermes'
+native installer:
 
 ```bash
-pip install hermes-plugin-onchain-router==0.1.0
-hermes-onchain-router setup
+hermes plugins install AgenticFI/onchain-router-hermes --enable
+hermes plugins doctor onchain-router --ci
+hermes onchain-router setup
 ```
+
+The installer records the exact Git commit it installed. For a reproducible deployment, add
+`--ref <40-character-release-commit>` to the first command. The release page publishes that commit
+alongside the wheel. A desktop user can start the same reviewed flow with this link:
+
+[Install in Hermes Desktop](hermes://plugin/install?repo=AgenticFI/onchain-router-hermes&enable=1)
+
+Python package publication is not required for the native install path. A wheel is attached to the
+GitHub release for inspection and controlled Python-environment installation.
+
+The repository-root manifest intentionally uses Hermes' backward-compatible v1 declaration while
+including supported discovery fields. Hermes `0.21.0` still rejects an explicit manifest-v2 marker
+in its Git installer; the wheel entry point carries the full v2 manifest.
 
 `setup` installs only these exact npm clients in `~/.onchain-router/hermes/npm` with lifecycle
 scripts disabled:
@@ -81,14 +97,16 @@ and unlock separately in a human terminal using the installed AgenticFI CLI, the
 The proxy creates the non-wallet owner-only bearer when it starts. Select provider
 `onchain-router` plus a model from the live picker.
 
-Lifecycle commands are explicit and preserve financial state:
+Lifecycle commands are explicit and preserve financial state. With the native Git install, use
+the `hermes onchain-router` form shown here; a wheel installation also exposes the equivalent
+`hermes-onchain-router` executable:
 
 ```bash
-hermes-onchain-router update
-hermes-onchain-router doctor
-hermes-onchain-router status --start
-hermes-onchain-router stop
-hermes-onchain-router uninstall-clients --confirm
+hermes onchain-router update
+hermes onchain-router doctor
+hermes onchain-router status --start
+hermes onchain-router stop
+hermes onchain-router uninstall-clients --confirm
 ```
 
 `update` reinstalls only the two pinned client versions. `uninstall-clients` removes only those
@@ -179,6 +197,8 @@ does not delete provider copies.
 
 ## Troubleshooting
 
+- Installation fails: confirm Git and Hermes `0.21.0` are installed, then rerun
+  `hermes plugins doctor onchain-router --ci`.
 - Plugin missing: run `hermes plugins enable onchain-router`, then restart Hermes.
 - Provider has no models: run `hermes-onchain-router doctor`, unlock Buyer Runtime in a human
   terminal, and restart Hermes.

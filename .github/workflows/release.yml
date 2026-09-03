@@ -1,0 +1,29 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  github-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@e92bafb6253dcd438e0484186d7669ea7a8ca1cc # v6
+        with:
+          version: "0.8.17"
+          python-version: "3.13"
+      - run: uv venv --python 3.13
+      - run: uv pip install --python .venv/bin/python -e '.[dev]'
+      - run: .venv/bin/pytest
+      - run: .venv/bin/python -m build
+      - run: .venv/bin/python scripts/inspect_wheel.py dist/*.whl
+      - name: Publish immutable GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
