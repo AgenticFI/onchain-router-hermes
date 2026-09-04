@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.1.1 - 2026-09-04
+## 0.2.0 - 2026-09-04
 
-- Updated the managed AgenticFI CLI and buyer proxy dependencies to stable npm release `0.1.3`.
+- Updated the managed Onchain Router CLI and buyer proxy dependencies to stable npm release `0.2.0`.
 - Moved documentation, manifest, and provider metadata to `https://onchainrouter.dev`.
 - Promoted the GitHub distribution from the bounded alpha channel to the stable release channel.
 - Added the root manifest and entry point required by Hermes' native Git installer.

@@ -10,7 +10,7 @@ hermes plugins doctor onchain-router --ci
 hermes onchain-router setup
 ```
 
-Then use the installed AgenticFI CLI to create or select a low-balance Buyer Runtime profile,
+Then use the installed Onchain Router CLI to create or select a low-balance Buyer Runtime profile,
 configure conservative budgets, and unlock it. Restart Hermes and choose provider
 `onchain-router` with a model returned by its live picker.
 

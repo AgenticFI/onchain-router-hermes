@@ -27,7 +27,7 @@ COMMON = {
     "model": {
         "type": "string",
         "pattern": MODEL.pattern,
-        "description": "Exact model returned by the live AgenticFI catalog.",
+        "description": "Exact model returned by the live Onchain Router catalog.",
     },
 }
 

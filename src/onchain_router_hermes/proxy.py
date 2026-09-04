@@ -1,4 +1,4 @@
-"""Fixed-version supervisor for the local AgenticFI buyer proxy."""
+"""Fixed-version supervisor for the local Onchain Router buyer proxy."""
 
 from __future__ import annotations
 
@@ -18,8 +18,8 @@ import httpx
 
 from .token import profile_directory, read_proxy_token, refresh_token_environment, token_file
 
-PROXY_PACKAGE = "@agenticfi/onchain-router-proxy"
-PROXY_VERSION = "0.1.3"
+PROXY_PACKAGE = "@onchainrouter/proxy"
+PROXY_VERSION = "0.2.0"
 PROXY_ORIGIN = "http://127.0.0.1:8402"
 MAX_CATALOG_BYTES = 4 * 1024 * 1024
 START_TIMEOUT_SECONDS = 15.0
@@ -52,7 +52,7 @@ def _owned_regular_file(path: Path, label: str) -> None:
 
 
 def resolve_proxy_entrypoint(root: Path | None = None) -> Path:
-    package_directory = (root or npm_root()) / "node_modules" / "@agenticfi" / "onchain-router-proxy"
+    package_directory = (root or npm_root()) / "node_modules" / "@onchainrouter" / "proxy"
     package_json = package_directory / "package.json"
     _owned_regular_file(package_json, "buyer proxy package metadata")
     if package_json.stat().st_size > 16 * 1024:

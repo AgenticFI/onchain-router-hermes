@@ -26,7 +26,7 @@ def attach_paid_request_identity(**kwargs: Any) -> dict[str, Any] | None:
     """Attach one stable Buyer Runtime key to every retry of one Hermes call."""
     provider = str(kwargs.get("provider") or "").strip().lower()
     base_url = str(kwargs.get("base_url") or "").rstrip("/")
-    if provider not in {"onchain-router", "agenticfi"} or base_url != f"{PROXY_ORIGIN}/v1":
+    if provider not in {"onchain-router", "onchainrouter"} or base_url != f"{PROXY_ORIGIN}/v1":
         return None
     request = kwargs.get("request")
     if not isinstance(request, dict):

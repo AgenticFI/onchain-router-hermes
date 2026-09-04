@@ -30,7 +30,7 @@ def test_update_reinstalls_exact_clients_without_touching_wallet_state(monkeypat
     monkeypatch.setattr(cli, "install_local_clients", lambda: tmp_path / "npm")
     cli._update(argparse.Namespace())
     output = capsys.readouterr().out
-    assert "updated exact AgenticFI clients" in output
+    assert "updated exact Onchain Router clients" in output
     assert "No wallet" in output
 
 

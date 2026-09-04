@@ -17,8 +17,8 @@ from . import __version__
 from .proxy import PROXY_PACKAGE, PROXY_VERSION, ensure_running, npm_root, resolve_proxy_entrypoint, status, stop
 from .token import read_proxy_token, token_file
 
-CLI_PACKAGE = "@agenticfi/onchain-router-cli"
-CLI_VERSION = "0.1.3"
+CLI_PACKAGE = "@onchainrouter/cli"
+CLI_VERSION = "0.2.0"
 
 
 def _node_version(node: str) -> tuple[int, int, int]:
@@ -33,9 +33,9 @@ def _package_metadata(root: Path, scope: str, name: str) -> dict:
     path = root / "node_modules" / scope / name / "package.json"
     metadata = path.lstat()
     if path.is_symlink() or not stat.S_ISREG(metadata.st_mode) or metadata.st_size > 16 * 1024:
-        raise RuntimeError("installed AgenticFI package metadata is invalid")
+        raise RuntimeError("installed Onchain Router package metadata is invalid")
     if hasattr(os, "getuid") and metadata.st_uid != os.getuid():
-        raise RuntimeError("installed AgenticFI package metadata has the wrong owner")
+        raise RuntimeError("installed Onchain Router package metadata has the wrong owner")
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -72,11 +72,11 @@ def install_local_clients() -> Path:
         env=_child_environment(),
     )
     if result.returncode != 0:
-        raise RuntimeError("exact AgenticFI client installation failed")
-    proxy_meta = _package_metadata(root, "@agenticfi", "onchain-router-proxy")
-    cli_meta = _package_metadata(root, "@agenticfi", "onchain-router-cli")
+        raise RuntimeError("exact Onchain Router client installation failed")
+    proxy_meta = _package_metadata(root, "@onchainrouter", "proxy")
+    cli_meta = _package_metadata(root, "@onchainrouter", "cli")
     if proxy_meta.get("version") != PROXY_VERSION or cli_meta.get("version") != CLI_VERSION:
-        raise RuntimeError("installed AgenticFI client version is not the approved exact version")
+        raise RuntimeError("installed Onchain Router client version is not the approved exact version")
     resolve_proxy_entrypoint(root)
     return root
 
@@ -99,7 +99,7 @@ def _enable_plugin() -> bool:
 def _setup(_: argparse.Namespace) -> None:
     root = install_local_clients()
     enabled = _enable_plugin()
-    print("AgenticFI Hermes adapter setup complete.")
+    print("Onchain Router Hermes adapter setup complete.")
     print(f"  Exact clients: {root}")
     print(f"  Proxy bearer:  {token_file()} (created by the proxy after human Buyer Runtime setup)")
     print(f"  Plugin enabled: {'yes' if enabled else 'run: hermes plugins enable onchain-router'}")
@@ -141,7 +141,7 @@ def _stop(_: argparse.Namespace) -> None:
 
 def _update(_: argparse.Namespace) -> None:
     root = install_local_clients()
-    print(f"Verified and updated exact AgenticFI clients at {root}.")
+    print(f"Verified and updated exact Onchain Router clients at {root}.")
     print("No wallet, policy, bearer, receipt, or recovery data was changed.")
 
 
@@ -149,10 +149,10 @@ def _uninstall_clients(args: argparse.Namespace) -> None:
     if not args.confirm:
         raise SystemExit("refusing to remove clients without --confirm")
     root = npm_root()
-    proxy_meta = _package_metadata(root, "@agenticfi", "onchain-router-proxy")
-    cli_meta = _package_metadata(root, "@agenticfi", "onchain-router-cli")
+    proxy_meta = _package_metadata(root, "@onchainrouter", "proxy")
+    cli_meta = _package_metadata(root, "@onchainrouter", "cli")
     if proxy_meta.get("version") != PROXY_VERSION or cli_meta.get("version") != CLI_VERSION:
-        raise RuntimeError("refusing to remove an unrecognized AgenticFI client version")
+        raise RuntimeError("refusing to remove an unrecognized Onchain Router client version")
     npm = shutil.which("npm")
     if not npm:
         raise RuntimeError("npm is required")
@@ -167,8 +167,8 @@ def _uninstall_clients(args: argparse.Namespace) -> None:
         env=_child_environment(),
     )
     if result.returncode != 0:
-        raise RuntimeError("exact AgenticFI client removal failed")
-    print("Removed only the Hermes-managed AgenticFI npm clients.")
+        raise RuntimeError("exact Onchain Router client removal failed")
+    print("Removed only the Hermes-managed Onchain Router npm clients.")
     print(f"Kept Buyer Runtime profile, wallet, policy, bearer, and receipts at {root.parent.parent}.")
 
 

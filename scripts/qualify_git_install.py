@@ -53,9 +53,9 @@ def main() -> None:
             "onchain_router_transcribe",
         }
         if not expected_tools.issubset(manager._plugin_tool_names):
-            raise SystemExit("native Git install omitted AgenticFI tools")
+            raise SystemExit("native Git install omitted Onchain Router tools")
         if "onchain-router" not in manager._plugin_commands or "onchain-router" not in manager._cli_commands:
-            raise SystemExit("native Git install omitted AgenticFI commands")
+            raise SystemExit("native Git install omitted Onchain Router commands")
 
         from providers import list_providers
 

@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hermes-plugin-onchain-router"
-version = "0.1.1"
-description = "AgenticFI Onchain Router provider and bounded media tools for Hermes Agent"
+version = "0.2.0"
+description = "Onchain Router provider and bounded media tools for Hermes Agent"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "AgenticFI" }]
+authors = [{ name = "Onchain Router" }]
 requires-python = ">=3.11,<3.14"
-keywords = ["hermes-agent", "agenticfi", "x402", "llm", "buyer-runtime"]
+keywords = ["hermes-agent", "onchainrouter", "x402", "llm", "buyer-runtime"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -44,9 +44,9 @@ hermes-onchain-router = "onchain_router_hermes.cli:main"
 [project.urls]
 Homepage = "https://onchainrouter.dev/docs/hermes"
 Documentation = "https://onchainrouter.dev/docs/hermes"
-Repository = "https://github.com/AgenticFI/onchain-router-hermes"
-Issues = "https://github.com/AgenticFI/onchain-router-hermes/issues"
-Changelog = "https://github.com/AgenticFI/onchain-router-hermes/blob/main/CHANGELOG.md"
+Repository = "https://github.com/OnchainRouter/onchain-router-hermes"
+Issues = "https://github.com/OnchainRouter/onchain-router-hermes/issues"
+Changelog = "https://github.com/OnchainRouter/onchain-router-hermes/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
