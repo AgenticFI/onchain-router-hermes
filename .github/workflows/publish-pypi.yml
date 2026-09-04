@@ -1,0 +1,36 @@
+name: publish-pypi
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type publish-0.2.0-pypi
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main' && inputs.confirmation == 'publish-0.2.0-pypi'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@e92bafb6253dcd438e0484186d7669ea7a8ca1cc # v6
+        with:
+          version: "0.8.17"
+          python-version: "3.13"
+      - run: uv venv --python 3.13
+      - run: uv pip install --python .venv/bin/python -e '.[dev]'
+      - run: .venv/bin/pytest
+      - run: .venv/bin/python -m build
+      - run: .venv/bin/python scripts/inspect_wheel.py dist/*.whl
+      - name: Publish the inspected wheel with PyPI trusted publishing
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
+        with:
+          packages-dir: dist/
