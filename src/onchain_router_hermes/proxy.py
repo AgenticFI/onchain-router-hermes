@@ -19,7 +19,7 @@ import httpx
 from .token import profile_directory, read_proxy_token, refresh_token_environment, token_file
 
 PROXY_PACKAGE = "@agenticfi/onchain-router-proxy"
-PROXY_VERSION = "0.1.2"
+PROXY_VERSION = "0.1.3"
 PROXY_ORIGIN = "http://127.0.0.1:8402"
 MAX_CATALOG_BYTES = 4 * 1024 * 1024
 START_TIMEOUT_SECONDS = 15.0

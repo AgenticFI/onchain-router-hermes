@@ -45,8 +45,8 @@ def main(wheel: str) -> None:
             "-c",
             (
                 "import importlib.metadata as m, onchain_router_hermes as p; "
-                "assert m.version('hermes-plugin-onchain-router') == '0.1.0'; "
-                "assert p.__version__ == '0.1.0'"
+                "assert m.version('hermes-plugin-onchain-router') == '0.1.1'; "
+                "assert p.__version__ == '0.1.1'"
             ),
         ]
         run(probe, environment=environment)

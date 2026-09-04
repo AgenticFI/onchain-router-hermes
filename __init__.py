@@ -19,7 +19,7 @@ if _LOADED_AS_PACKAGE:
     __path__.append(str(_IMPLEMENTATION))
 
 __all__ = ["register"]
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 
 def _register_provider_side_effect() -> None:

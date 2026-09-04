@@ -1,11 +1,11 @@
 name: onchain-router
-version: 0.1.0
+version: 0.1.1
 api_version: 1
 description: "AgenticFI Onchain Router provider and bounded media tools over the local Buyer Runtime."
 author: AgenticFI
 kind: standalone
 license: MIT
-homepage: https://llm.agenticfi.wtf/docs/hermes
+homepage: https://onchainrouter.dev/docs/hermes
 tags:
   - agenticfi
   - x402

@@ -18,4 +18,4 @@ Keep the local proxy on `127.0.0.1`; never expose it through a tunnel or LAN bin
 ambiguous paid result with the original idempotency key and identical request instead of starting a
 new payment.
 
-Guide: https://llm.agenticfi.wtf/docs/hermes
+Guide: https://onchainrouter.dev/docs/hermes

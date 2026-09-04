@@ -12,7 +12,7 @@ def register_profile():
         aliases=("agenticfi",),
         display_name="AgenticFI Onchain Router",
         description="Policy-bounded, receipt-backed LLM access paid with USDC on Base",
-        signup_url="https://llm.agenticfi.wtf/docs/hermes",
+        signup_url="https://onchainrouter.dev/docs/hermes",
         env_vars=("ONCHAIN_ROUTER_PROXY_TOKEN",),
         base_url="http://127.0.0.1:8402/v1",
         models_url="http://127.0.0.1:8402/v1/models",
