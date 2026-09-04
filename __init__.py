@@ -1,4 +1,4 @@
-"""Hermes directory-plugin entry point for the AgenticFI Onchain Router.
+"""Hermes directory-plugin entry point for Onchain Router.
 
 The GitHub installer loads this repository root as a Python package. Extending the package search
 path lets the directory install and the wheel reuse exactly the same reviewed implementation.
@@ -13,13 +13,13 @@ from typing import Any
 
 _IMPLEMENTATION = Path(__file__).resolve().parent / "src" / "onchain_router_hermes"
 if not _IMPLEMENTATION.is_dir():
-    raise RuntimeError("AgenticFI Hermes implementation directory is missing")
+    raise RuntimeError("Onchain Router Hermes implementation directory is missing")
 _LOADED_AS_PACKAGE = bool(__package__) and "__path__" in globals()
 if _LOADED_AS_PACKAGE:
     __path__.append(str(_IMPLEMENTATION))
 
 __all__ = ["register"]
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 
 def _register_provider_side_effect() -> None:

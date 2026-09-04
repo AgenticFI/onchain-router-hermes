@@ -1,9 +1,9 @@
 ---
 name: onchain-router-guide
-description: Use AgenticFI Onchain Router models and media safely through the local Buyer Runtime.
+description: Use Onchain Router models and media safely through the local Buyer Runtime.
 ---
 
-# AgenticFI Onchain Router
+# Onchain Router
 
 Use provider `onchain-router` for ordinary chat. Select an explicit model from the live model picker
 or call `onchain_router_models`; never invent a model name. The local human-owned Buyer Runtime
@@ -18,7 +18,7 @@ to another model after an ambiguous paid call.
 
 Image results use hosted URLs and include an expiry; download before expiry. Speech returns hosted
 audio JSON. Transcription accepts bounded canonical MP3 Base64 only. Obtain human permission for
-the audio and set `acknowledge_provider_retention: true`; provider copies may outlive AgenticFI's
+the audio and set `acknowledge_provider_retention: true`; provider copies may outlive Onchain Router's
 encrypted staging deletion.
 
 Do not ask for, read, display, or store a wallet key, mnemonic, proxy bearer, payment signature,

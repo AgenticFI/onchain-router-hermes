@@ -28,5 +28,5 @@ pass.
 ## Reporting
 
 Report vulnerabilities privately through
-<https://github.com/AgenticFI/onchain-router-hermes/security/advisories/new>. Do not include wallet
+<https://github.com/OnchainRouter/onchain-router-hermes/security/advisories/new>. Do not include wallet
 keys, proxy bearers, payment payloads, receipt capabilities, prompts, media, or model output.

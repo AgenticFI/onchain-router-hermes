@@ -9,8 +9,8 @@ def register_profile():
 
     profile = ProviderProfile(
         name="onchain-router",
-        aliases=("agenticfi",),
-        display_name="AgenticFI Onchain Router",
+        aliases=("onchainrouter",),
+        display_name="Onchain Router",
         description="Policy-bounded, receipt-backed LLM access paid with USDC on Base",
         signup_url="https://onchainrouter.dev/docs/hermes",
         env_vars=("ONCHAIN_ROUTER_PROXY_TOKEN",),

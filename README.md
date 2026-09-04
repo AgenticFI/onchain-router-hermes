@@ -1,4 +1,4 @@
-# AgenticFI Onchain Router for Hermes Agent
+# Onchain Router for Hermes Agent
 
 Use Onchain Router as a native Hermes model provider and as a small set of bounded media tools. The
 plugin connects only to the authenticated local Buyer Runtime proxy on `127.0.0.1`; wallet and
@@ -6,7 +6,7 @@ payment authority remain outside Hermes and under human-owned local policy.
 
 ## Release status
 
-Version `0.1.1` is the stable public release. It is installable through Hermes' native GitHub plugin
+Version `0.2.0` is the stable public release. It is installable through Hermes' native GitHub plugin
 installer and is also available as a versioned GitHub release. Building or installing it,
 discovering the provider, and running fake-loopback tests do not unlock a wallet, make a paid
 request, deploy a service, or spend USDC. Funded Hermes acceptance remains an explicit operator
@@ -32,7 +32,7 @@ Every native chat retry for one logical model call carries the same deterministi
 idempotency key. The key is derived only from Hermes request identity—not prompt or completion
 content—so host retry behavior cannot create a second financial operation.
 
-The plugin does not add video or search endpoints that AgenticFI does not offer. It does not create,
+The plugin does not add video or search endpoints that Onchain Router does not offer. It does not create,
 import, read, unlock, fund, or back up a wallet; implement x402; connect directly to production;
 download a package during host startup or a model call; retry a paid request; or choose a fallback.
 
@@ -42,7 +42,7 @@ download a package during host startup or a model call; retry a paid request; or
 - Hermes Agent `0.21.0`;
 - Node.js `20.18` or newer and npm;
 - macOS or Linux;
-- a human-created AgenticFI Buyer Runtime profile.
+- a human-created Onchain Router Buyer Runtime profile.
 
 ## Build and test from source
 
@@ -65,7 +65,7 @@ Review the [security model](./SECURITY.md), then install and verify the public p
 native installer:
 
 ```bash
-hermes plugins install AgenticFI/onchain-router-hermes --enable
+hermes plugins install OnchainRouter/onchain-router-hermes --enable
 hermes plugins doctor onchain-router --ci
 hermes onchain-router setup
 ```
@@ -74,7 +74,7 @@ The installer records the exact Git commit it installed. For a reproducible depl
 `--ref <40-character-release-commit>` to the first command. The release page publishes that commit
 alongside the wheel. A desktop user can start the same reviewed flow with this link:
 
-[Install in Hermes Desktop](hermes://plugin/install?repo=AgenticFI/onchain-router-hermes&enable=1)
+[Install in Hermes Desktop](hermes://plugin/install?repo=OnchainRouter/onchain-router-hermes&enable=1)
 
 Python package publication is not required for the native install path. A wheel is attached to the
 GitHub release for inspection and controlled Python-environment installation.
@@ -87,13 +87,13 @@ in its Git installer; the wheel entry point carries the full v2 manifest.
 scripts disabled:
 
 ```text
-@agenticfi/onchain-router-proxy@0.1.3
-@agenticfi/onchain-router-cli@0.1.3
+@onchainrouter/proxy@0.2.0
+@onchainrouter/cli@0.2.0
 ```
 
 It enables the Hermes plugin when the `hermes` executable is available. It deliberately does not
 start the proxy or create, import, unlock, fund, or charge a wallet. Complete Buyer Runtime setup
-and unlock separately in a human terminal using the installed AgenticFI CLI, then restart Hermes.
+and unlock separately in a human terminal using the installed Onchain Router CLI, then restart Hermes.
 The proxy creates the non-wallet owner-only bearer when it starts. Select provider
 `onchain-router` plus a model from the live picker.
 
@@ -127,7 +127,7 @@ Once provider and model are selected, use Hermes normally:
 hermes --provider onchain-router --model gemini-2.5-flash
 ```
 
-The local proxy is started before the first AgenticFI model call if it is not already healthy. It
+The local proxy is started before the first Onchain Router model call if it is not already healthy. It
 uses the exact preinstalled package, a fixed loopback port, and no runtime download. The Buyer
 Runtime applies the human's model, amount, session, hourly, daily, recipient, network, and
 confirmation limits.
@@ -155,7 +155,7 @@ The result contains a hosted URL and expiry. Download it before expiry.
 {
   "idempotency_key": "speech-task-20260901-001",
   "model": "<live-speech-model-id>",
-  "input": "Welcome to AgenticFI.",
+  "input": "Welcome to Onchain Router.",
   "response_format": "mp3",
   "speed": 1
 }
@@ -172,7 +172,7 @@ The result contains a hosted URL and expiry. Download it before expiry.
 ```
 
 Transcription accepts no file path or remote URL. The caller must obtain permission for the audio.
-The upstream provider may retain audio or transcripts independently; AgenticFI staging deletion
+The upstream provider may retain audio or transcripts independently; Onchain Router staging deletion
 does not delete provider copies.
 
 ## Payment, recovery, and receipts
@@ -212,9 +212,9 @@ does not delete provider copies.
 
 Documentation: <https://onchainrouter.dev/docs/hermes>
 
-Support: <https://github.com/AgenticFI/onchain-router-hermes/issues>
+Support: <https://github.com/OnchainRouter/onchain-router-hermes/issues>
 
-Security reports: <https://github.com/AgenticFI/onchain-router-hermes/security/policy>
+Security reports: <https://github.com/OnchainRouter/onchain-router-hermes/security/policy>
 
 ## License
 
