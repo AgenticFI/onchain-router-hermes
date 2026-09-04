@@ -6,7 +6,7 @@ payment authority remain outside Hermes and under human-owned local policy.
 
 ## Release status
 
-Version `0.1.0` is a bounded public alpha. It is installable through Hermes' native GitHub plugin
+Version `0.1.1` is the stable public release. It is installable through Hermes' native GitHub plugin
 installer and is also available as a versioned GitHub release. Building or installing it,
 discovering the provider, and running fake-loopback tests do not unlock a wallet, make a paid
 request, deploy a service, or spend USDC. Funded Hermes acceptance remains an explicit operator
@@ -87,8 +87,8 @@ in its Git installer; the wheel entry point carries the full v2 manifest.
 scripts disabled:
 
 ```text
-@agenticfi/onchain-router-proxy@0.1.2
-@agenticfi/onchain-router-cli@0.1.2
+@agenticfi/onchain-router-proxy@0.1.3
+@agenticfi/onchain-router-cli@0.1.3
 ```
 
 It enables the Hermes plugin when the `hermes` executable is available. It deliberately does not
@@ -210,7 +210,7 @@ does not delete provider copies.
 - Ambiguous result: do not use a new key or model. Inspect receipts and recover with the original
   key and identical body.
 
-Documentation: <https://llm.agenticfi.wtf/docs/hermes>
+Documentation: <https://onchainrouter.dev/docs/hermes>
 
 Support: <https://github.com/AgenticFI/onchain-router-hermes/issues>
 

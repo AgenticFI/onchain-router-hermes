@@ -20,7 +20,7 @@
 
 ## Supported systems
 
-The bounded public-alpha candidate targets macOS and Linux with Python 3.11–3.13, Hermes Agent
+The stable public release targets macOS and Linux with Python 3.11–3.13, Hermes Agent
 0.21.0, and Node.js
 20.18 or newer. Windows is not advertised until equivalent process, filesystem, and secret tests
 pass.

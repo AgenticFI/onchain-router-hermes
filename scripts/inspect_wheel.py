@@ -19,7 +19,7 @@ def main(path: str) -> None:
         metadata_name = next(name for name in names if name.endswith(".dist-info/METADATA"))
         entry_name = next(name for name in names if name.endswith(".dist-info/entry_points.txt"))
         metadata = email.message_from_bytes(archive.read(metadata_name))
-        if metadata["Name"] != "hermes-plugin-onchain-router" or metadata["Version"] != "0.1.0":
+        if metadata["Name"] != "hermes-plugin-onchain-router" or metadata["Version"] != "0.1.1":
             raise SystemExit("wheel identity drifted")
         if metadata["License-Expression"] != "MIT":
             raise SystemExit("wheel license drifted")
